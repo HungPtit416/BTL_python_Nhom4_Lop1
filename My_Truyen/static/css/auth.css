@@ -1,0 +1,84 @@
+.user_card {
+    width: 550px;
+    height: 440px;
+    margin-top: auto;
+    margin-bottom: auto;
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5));
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 5px;
+}
+
+.form_container {
+    margin-top: 20px;
+}
+
+#form-title {
+    color: white;
+
+}
+
+.login_btn {
+    background: #fca400 !important;
+    color: white !important;
+}
+.login_btn:hover{
+    background: #234871 !important;
+    color:#fca400 !important ;
+}
+
+.login_btn:focus {
+    box-shadow: none !important;
+    outline: 0px !important;
+}
+
+.login_container {
+    padding: 0 2rem;
+}
+
+.input-group-text {
+    background-color: darkgray !important;
+    color: white !important;
+    border: 0 !important;
+    border-radius: 0.25rem 0 0 0.25rem !important;
+    height: 100%;
+}
+
+.input_user,
+.input_pass:focus {
+    box-shadow: none !important;
+    outline: 0px !important;
+}
+
+#messages {
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+}
+.login-box{
+    height: 90vh;
+    width: 100%;
+    background-image: linear-gradient(rgba(0,0,0,0.1),rgba(0,0,0,0.1)),url('/static/showimage/backround-my.jpg');
+    background-size: cover;
+    position: relative;
+    background-position: center center;
+}
+.ml-2{
+    margin-left: 10px;
+    text-decoration: none;
+    color: white;
+}
+.ml-2:hover{
+    color: darkorange;
+}
+.errorlist{
+    color: red;
+    margin-left: 50px;
+}

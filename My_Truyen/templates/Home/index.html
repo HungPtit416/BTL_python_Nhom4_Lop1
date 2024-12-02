@@ -1,0 +1,249 @@
+{% extends 'Base/index.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #f9e6f5, #e3f2fd);
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    .col-md-9 {
+        background: rgba(255, 255, 255, 0.8);
+        padding-right:-12px;
+    }
+    .portlet {
+        background: rgba(255, 255, 255, 0.8);
+    }
+</style>
+    <div class="container">
+        {# star carousel#}
+        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="3000">
+                    <img src="{% static '/showimage/carosel1.jpg' %}" class="d-block w-100 h-90  image-carousel img-thumbnail img-fluid">
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                    <img src="{% static '/showimage/carosel2.jpg' %}" class="d-block w-100 h-90  image-carousel img-thumbnail img-fluid">
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                    <img src="{% static '/showimage/carosel4.jpg' %}" class="d-block w-100 h-90  image-carousel img-thumbnail img-fluid">
+                </div>
+            </div>
+        </div>
+        {# end carousel #}
+        
+        <div class = "portlet">
+            <div class = "row">
+                <div class="col-md-9 my-list">
+                    <div class="d-flex margin-box" style="height: 40px;">
+                        <p class="p-2" style="font-size: larger">
+                            <i class="fas fa-fire" style="margin-right: 5px; color: #FF8247;"></i>
+                            <strong>Truyện đề cử</strong>
+                        </p>
+                        <span class="example-spacer"></span>
+                        <button id="toggleView" class="nav-link right-label btn btn-link">
+                            Xem tất cả <i class="fas fa-chevron-circle-right"></i>
+                        </button>
+                    </div>
+                    <div class="view-list" style="margin-left: 6%">
+                        {% for item in listTruyen %}
+                        <div class="mycard text-center truyens" 
+                             {% if forloop.counter > 5 %}style="display: none;"{% endif %}>
+                            <a href="/SelectTruyen/{{ item.IDtruyen }}">
+                                <img class="img-thumbnail zoom" style="height: 200px" src="{% static item.anh %}">
+                            </a>
+                            <a href="/SelectTruyen/{{ item.IDtruyen }}" class="mylink">
+                                <p class="my-context">
+                                    <strong>{{ item.tentruyen }}</strong>
+                                </p>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <script>
+                    // Lắng nghe sự kiện click vào nút "Xem tất cả" hoặc "Thu gọn"
+                    document.getElementById('toggleView').addEventListener('click', function () {
+                        const button = this;
+                        const hiddenItems = document.querySelectorAll('.truyens');
+                        
+                        if (button.textContent.trim() === "Xem tất cả") {
+                            // Hiển thị tất cả các truyện
+                            hiddenItems.forEach(item => {
+                                item.style.display = 'block';
+                            });
+                            // Đổi nút thành "Thu gọn"
+                            button.innerHTML = 'Thu gọn <i class="fas fa-chevron-circle-left"></i>';
+                        } else {
+                            // Ẩn các truyện từ vị trí thứ 6 trở đi
+                            hiddenItems.forEach((item, index) => {
+                                if (index >= 5) {
+                                    item.style.display = 'none';
+                                }
+                            });
+                            // Đổi nút thành "Xem tất cả"
+                            button.innerHTML = 'Xem tất cả <i class="fas fa-chevron-circle-right"></i>';
+                        }
+                    });
+                </script>
+                
+                <div class = "col-md-3 top-view">
+                    <div class="d-flex" style="height: 40px">
+                        <p class="p-2 " style="font-size: medium"> 
+                            <i class="fas fa-star" style="color: #fca400"></i>
+                            <strong>Truyện có lượt xem nhiều nhất</strong>
+                        </p>
+                   </div>
+                    <div id="mytop" style="padding-left: 15px;padding-right: 15px;">
+                        {% for item in topView %}
+                            <a href="/SelectTruyen/{{ item.IDtruyen }}" id = "topitem" class="tag-top nav-link">{{item.tentruyen }}</a>
+                        {% endfor %}
+                        <script>
+                            let res = jQuery.makeArray($("#mytop").find("a"));
+                            let index = 1;
+                            for(let item of res){
+                                let temptr = '<span class="badge badge-secondary">' + index + '</span>';
+                                index += 1;
+                                $(item).prepend(temptr);
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="portlet new">
+            <div class="row">
+                <div class="col-md-12 my-list">
+                    <div class="d-flex" style="height: 40px">
+                        <p class="p-2" style="font-size: larger">
+                            <i class="fas fa-plus-circle" style="color: #FF8247;"></i>
+                            <strong>Truyện mới cập nhật</strong>
+                        </p>
+                        <span class="example-spacer"></span>
+                        <button id="toggleNewView" class="nav-link right-label btn btn-link">
+                            Xem tất cả <i class="fas fa-chevron-circle-right"></i>
+                        </button>
+                    </div>
+                    <div class="view-list" >
+                        {% for item in newView %}
+                        <div class="mycard text-center new-truyens" 
+                             {% if forloop.counter > 7 %}style="display: none;"{% endif %}>
+                            <a href="/SelectTruyen/{{ item.IDtruyen }}">
+                                <img class="zoom img-thumbnail" style="height: 200px" src="{% static item.anh %}">
+                            </a>
+                            <a href="/SelectTruyen/{{ item.IDtruyen }}" class="mylink">
+                                <p class="my-context">
+                                    <strong>{{ item.tentruyen }}</strong>
+                                </p>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Lắng nghe sự kiện click vào nút "Xem tất cả" hoặc "Thu gọn"
+            document.getElementById('toggleNewView').addEventListener('click', function () {
+                const button = this;
+                const hiddenItems = document.querySelectorAll('.new-truyens');
+                
+                if (button.textContent.trim() === "Xem tất cả") {
+                    // Hiển thị tất cả các truyện
+                    hiddenItems.forEach(item => {
+                        item.style.display = 'block';
+                    });
+                    // Đổi nút thành "Thu gọn"
+                    button.innerHTML = 'Thu gọn <i class="fas fa-chevron-circle-left"></i>';
+                } else {
+                    // Ẩn các truyện từ vị trí thứ 6 trở đi
+                    hiddenItems.forEach((item, index) => {
+                        if (index >= 7) {
+                            item.style.display = 'none';
+                        }
+                    });
+                    // Đổi nút thành "Xem tất cả"
+                    button.innerHTML = 'Xem tất cả <i class="fas fa-chevron-circle-right"></i>';
+                }
+            });
+        </script>
+        
+        
+        <div class = "portlet like">
+                <div class = "row">
+                    <div class="col-md-9 my-list">
+                        <div class="d-flex" style="height: 40px">
+                            <p class="p-2" style="font-size: larger">
+                                <i class="fas fa-crown" style="margin-right: 5px; color: #FF8247;"></i>
+                                <strong>Truyện có nhiều lượt yêu thích</strong>
+                            </p>
+                            <span class="example-spacer"></span>
+                            <button id="toggleLoveView" class="nav-link right-label btn btn-link">
+                                Xem tất cả <i class="fas fa-chevron-circle-right"></i>
+                            </button>
+                        </div>
+                        <div class="view-list" style="margin-left: 6%">
+                            {% for item in loveView %}
+                            <div class="mycard text-center love-truyens" 
+                                 {% if forloop.counter > 5 %}style="display: none;"{% endif %}>
+                                <a href="/SelectTruyen/{{ item.IDtruyen }}">
+                                    <img class="zoom img-thumbnail" style="height: 200px" src="{% static item.anh %}">
+                                </a>
+                                <a href="/SelectTruyen/{{ item.IDtruyen }}" class="mylink">
+                                    <p class="my-context">
+                                        <strong>{{ item.tentruyen }}</strong>
+                                    </p>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <script>
+                        // Lắng nghe sự kiện click vào nút "Xem tất cả" hoặc "Thu gọn"
+                        document.getElementById('toggleLoveView').addEventListener('click', function () {
+                            const button = this;
+                            const hiddenItems = document.querySelectorAll('.love-truyens');
+                            
+                            if (button.textContent.trim() === "Xem tất cả") {
+                                // Hiển thị tất cả các truyện
+                                hiddenItems.forEach(item => {
+                                    item.style.display = 'block';
+                                });
+                                // Đổi nút thành "Thu gọn"
+                                button.innerHTML = 'Thu gọn <i class="fas fa-chevron-circle-left"></i>';
+                            } else {
+                                // Ẩn các truyện từ vị trí thứ 6 trở đi
+                                hiddenItems.forEach((item, index) => {
+                                    if (index >= 5) {
+                                        item.style.display = 'none';
+                                    }
+                                });
+                                // Đổi nút thành "Xem tất cả"
+                                button.innerHTML = 'Xem tất cả <i class="fas fa-chevron-circle-right"></i>';
+                            }
+                        });
+                    </script>
+                    
+                    <div class = "col-md-3 top-view">
+                        <div class="d-flex" style="height: 40px">
+                            <p class="p-2 " style="font-size: medium"> 
+                                <i class="fas fa-sync" style="margin-right: 5px;color: #fca400"></i>
+                                <strong>Chương mới cập nhật</strong>
+                            </p>
+                       </div>
+                        <div style="padding-left: 10px;padding-right: 10px;">
+                            {% for item in newChap %}
+                                <a href="/chap/{{ item.IDtruyen.pk }}/{{ item.id }}" class="tag-top nav-link ">{{ item.IDtruyen.pk }} : Chap {{ item.chap}} - {{ item.tenchap }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <br>
+{% endblock content %}

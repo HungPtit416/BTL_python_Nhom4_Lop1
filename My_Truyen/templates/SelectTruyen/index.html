@@ -1,0 +1,249 @@
+{% extends 'Base/index.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #f9e6f5, #e3f2fd);
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bg-white,
+    .book-color {
+        background: linear-gradient(135deg, #f9e6f5, #e3f2fd);
+    }
+    
+    /* Tùy chỉnh các thẻ table để nền không bị ảnh hưởng */
+    .table-striped tbody tr:nth-child(odd) {
+        background: rgba(255, 255, 255, 0.8);
+    }
+    .table-striped tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Các liên kết trong bảng (đảm bảo màu sắc dễ đọc) */
+    .my-link {
+        color: black;    
+    }
+    .my-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Nút theo dõi */
+    .follow-form button {
+        background: rgb(220, 53, 69);
+        color: white;
+    }
+
+    /* Đặc biệt là các nút theo dõi */
+    .btn-success {
+        background-color: red;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+    .context-book {
+        font-weight: bold;
+        color: black;
+    }
+    .book-bold,.book-color {
+        color: green;
+    }
+    .table-responsive-md, .col-md-6 p-2 {
+        background-color: white;
+    }
+</style>
+<div class="container">
+    <div class="main-detail">
+        <div class="row">
+            <div class="col-md-8 top-view box">
+                <div class="d-flex clear-fix bg-white mb-1">
+                    <p class="p-2" style="font-size: larger;color: tomato">
+                        <i class="fas fa-book-reader" style="margin-right: 5px"></i>{{ myTruyen.tentruyen }}
+                    </p>
+                </div>
+                <div class="clear-fix shadow-sm p-4 mb-2 bg-white rounded">
+                    <div class="d-flex">
+                        <a>
+                            <img class="my-story rounded img-thumbnail" style="height: 200px" src="{% static myTruyen.anh %}">
+                        </a>
+                        <div class="box-main">
+                            <div class="d-flex group-button">
+                                <button class="btn btn-danger">
+                                    <i class="fas fa-heart" style="margin-right: 5px"></i>Yêu thích
+                                </button>
+                               <!-- Nút theo dõi -->
+<form id="follow-form-{{ myTruyen.IDtruyen }}" class="follow-form" data-truyen-id="{{ myTruyen.IDtruyen }}" method="POST" action="{% url 'toggle_follow' myTruyen.IDtruyen %}">
+    {% csrf_token %}
+    <button type="submit" class="btn {% if is_following %}btn-secondary{% else %}btn-success{% endif %} subcrite-btn">
+        <i class="fas {% if is_following %}fa-check{% else %}fa-plus{% endif %}" style="margin-right: 5px"></i>
+        {% if is_following %}Bỏ theo dõi{% else %}Theo dõi{% endif %}
+    </button>
+</form>
+                                </form>
+                            </div>
+                            <div class="info-book">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="context-book"><i class="fas fa-user"></i>Tác giả: <span class="book-bold">{{ myTruyen.tacgia }}</span></p>
+                                        <p class="context-book"><i class="fas fa-tags"></i>Thể loại: <span class="book-color">{{ theLoai }}</span></p>
+                                        <p class="context-book"><i class="fas fa-database"></i>Nguồn: <span class="book-color">{{ myTruyen.nguon }}</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="context-book"><i class="fas fa-eye"></i>Lượt xem: <span class="book-bold">{{ myTruyen.luotxem }}</span></p>
+                                        <p class="context-book"><i class="fas fa-heart" style="color: black;"></i>Lượt yêu thích: <span class="book-bold">{{ myTruyen.yeuthich }}</span></p>
+                                        <p class="context-book"><i class="fas fa-book"></i>Số chương: <span class="book-bold">{{ numberChap }}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="btn my-bt" role="button" href="{% url 'ChapView' myTruyen.IDtruyen firstChap %}">Đọc từ đầu</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear-fix shadow-sm p-4 mb-2 bg-white rounded">
+                    <div class="row">
+                        <div class="col-md-6 p-2">
+                            <div class="book-content clear-fix p-3">
+                                <p style="text-align: center"><b><i class="fas fa-book-reader"></i>Nội dung truyện</b></p>
+                                <p class="chap">{{ myTruyen.gioithieu }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 p-2">
+                            <div class="book-content clear-fix p-3">
+                                <div class="table-responsive-md">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            {% for item in newChap %}
+                                                <tr>
+                                                    <td class="back">
+                                                        <a href="{% url 'ChapView' myTruyen.IDtruyen item.id %}" class="my-link link-title">Chương {{ item.chap }}:</a>
+                                                    </td>
+                                                    <td class="back">
+                                                        <a href="{% url 'ChapView' myTruyen.IDtruyen item.id %}" class="my-link link-content">{{ item.tenchap }}</a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                                                            </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 my-list box">
+                <div class="d-flex" style="height: 40px">
+                    <p class="p-2" style="font-size: larger;color: cadetblue">
+                        <i class="fas fa-folder" style="margin-right: 5px"></i>Truyện cùng thể loại
+                    </p>
+                </div>
+                <hr>
+                <div class="story-list">
+                    {% for item in sameType %}
+                        <div class="clear-fix shadow-sm p-3 mb-2 bg-white rounded">
+                            <div class="d-flex">
+                                <a href="{% url 'SelectTruyen' item.IDtruyen %}">
+                                    <img class="img-story rounded" style="height: 200px" src="{% static item.anh %}">
+                                </a>
+                                <div class="box-title">
+                                    <p class="title-main">
+                                        <a class="my-link" href="{% url 'SelectTruyen' item.IDtruyen %}"><b>{{ item.tentruyen }}</b></a>
+                                    </p>
+                                    <p class="context-main"><i class="fas fa-user"></i>Tác giả: {{ item.tacgia }}</p>
+                                    <p class="context-main"><i class="fas fa-eye"></i>Lượt xem: {{ item.luotxem }}</p>
+                                    <p class="context-main"><i class="fas fa-heart" style="color: black;"></i>Lượt yêu thích: {{ item.yeuthich }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="chapList">
+            <div class="clear-fix shadow-sm p-4 mb-2 bg-white rounded">
+                <p style="text-align: center"><b><i class="fas fa-th-list" style="margin-right: 5px"></i>Danh sách chương</b></p>
+                <div class="table-responsive-md p-4 ml-2 mr-2">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col"><i class="fas fa-file-alt"></i>Chương</th>
+                                <th scope="col"><i class="fas fa-book"></i>Tên chương</th>
+                                <th scope="col"><i class="fas fa-clock"></i>Ngày đăng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in allChap %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'ChapView' myTruyen.IDtruyen item.id %}" class="my-link link-title">Chương {{ item.chap }}:</a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'ChapView' myTruyen.IDtruyen item.id %}" class="my-link link-content">{{ item.tenchap }}</a>
+                                    </td>
+                                    <td>
+                                        <p>{{ item.thoigian|date:'d-F-Y' }}</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+  // Duyệt qua từng form follow
+  $('.follow-form').each(function () {
+    const followForm = $(this); // Lấy từng form theo class
+    const followButton = followForm.find('button'); // Lấy nút trong form đó
+    const truyenID = followForm.data('truyen-id'); // Lấy ID truyện từ form (data-truyen-id)
+
+    // Kiểm tra trạng thái trong localStorage khi tải lại trang
+    const isFollowing = localStorage.getItem(`isFollowing-${truyenID}`) === 'true';
+
+    if (isFollowing) {
+      followButton.removeClass('btn-success').addClass('btn-secondary').html('<i class="fas fa-check" style="margin-right: 5px"></i> Bỏ theo dõi');
+    } else {
+      followButton.removeClass('btn-secondary').addClass('btn-success').html('<i class="fas fa-plus" style="margin-right: 5px"></i> Theo dõi');
+    }
+
+    // Gắn sự kiện submit cho form
+    followForm.on('submit', function (event) {
+      event.preventDefault(); // Ngăn hành vi submit mặc định
+
+      $.ajax({
+        type: 'POST',
+        url: followForm.attr('action'),
+        data: followForm.serialize(),
+        success: function (response) {
+          // Cập nhật giao diện nút
+          if (response.status === "followed") {
+            followButton.removeClass('btn-success').addClass('btn-secondary').html('<i class="fas fa-check" style="margin-right: 5px"></i> Bỏ theo dõi');
+          } else {
+            followButton.removeClass('btn-secondary').addClass('btn-success').html('<i class="fas fa-plus" style="margin-right: 5px"></i> Theo dõi');
+          }
+
+          // Lưu trạng thái của từng truyện vào localStorage
+          localStorage.setItem(`isFollowing-${truyenID}`, response.status === 'followed');
+
+          // Hiển thị thông báo
+          alert(response.message);
+        },
+        error: function () {
+          alert("Có lỗi xảy ra khi thay đổi trạng thái theo dõi.");
+        }
+      });
+    });
+  });
+});
+
+</script>
+
+{% endblock %}
